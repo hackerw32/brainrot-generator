@@ -1,0 +1,24 @@
+{
+  "script": [
+    {
+      "character": "Peter",
+      "text": "Oh my god, Lois, you are not going to believe what happened today at the brewery.",
+      "avatar": ""
+    },
+    {
+      "character": "Stewie",
+      "text": "Oh dear, Peter. You absolute buffoon. I cannot believe I share a household with you.",
+      "avatar": ""
+    },
+    {
+      "character": "Rick",
+      "text": "Morty, listen to me. None of this matters. We are just tiny specks in an infinite universe.",
+      "avatar": ""
+    },
+    {
+      "character": "Morty",
+      "text": "Oh geez Rick, that is really dark. Can we just go home please?",
+      "avatar": ""
+    }
+  ]
+}

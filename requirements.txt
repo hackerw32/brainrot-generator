@@ -1,0 +1,11 @@
+customtkinter>=5.2.0
+Pillow>=10.0.0
+faster-whisper>=1.0.0
+edge-tts>=6.1.0
+pyttsx3>=2.90
+numpy>=1.24.0
+requests>=2.31.0
+
+# Optional for GPU acceleration (install separately with correct CUDA version)
+# torch>=2.0.0
+# torchaudio>=2.0.0

@@ -1,0 +1,60 @@
+# Comprehensive Prompt for Building a Local "Brainrot" Video Generator in Python (No Cost)
+
+I need a complete Python graphical user interface (GUI) application, intended for local, offline execution, which replicates the core functionality of `brainrot.mov`. This application will generate "brainrot" short-form videos using a combination of provided scripts, local addictive video assets, local open-source Text-to-Speech (TTS), and local OpenAI Whisper transcription for dynamic captioning.
+
+### 1. Project Requirements & Design Goals
+* **Operating System:** Focus on Windows (though cross-platform is ideal).
+* **License:** MUST utilize only free and open-source software (FOSS) libraries. No paid APIs or subscriptions (e.g., ElevenLabs).
+* **Performance:** Local execution means Voice Cloning and Whisper must run efficiently, even on a consumer GPU (CUDA required).
+* **Architecture:** Split the code logically: `gui.py`, `tts_engine.py`, `whisper_aligment.py`, `video_renderer.py`.
+
+### 2. Required Python Libraries (The Stack)
+Define a `requirements.txt` with these:
+* `PyQt6` or `CustomTkinter` (Modern dark GUI)
+* `moviepy` (Video processing)
+* `torch` (Required for RVC and Whisper)
+* `faster_whisper` (Faster local transcription, CTranslate2 backend)
+* `rvc_tts_pipe` (Or similar robust local RVC pipeline—this is the free alternative to ElevenLabs. The prompt needs to ask for a streamlined local setup using `torch` and `cuda`.)
+* `httpx` (Optional, if a free alternative API is needed as a backup)
+
+### 3. Detailed GUI Functional Requirements (`gui.py`)
+The main window must feature:
+1.  **Script Management:** A text area with 'LOAD JSON SCRIPT' (from the standard JSON format).
+2.  **Asset Management:** Buttons to 'SELECT BG VIDEOS FOLDER' and 'SELECT AVATARS FOLDER'.
+3.  **Local TTS Interface:**
+    * Dropdown menu populated with local RVC models (`.pth` files) and their associated configuration JSONs (e.g., 'Peter Griffin', 'Rick Sanchez').
+    * Status indicator: 'RVC Pipeline Status (CUDA enabled)'.
+4.  **Live Video Preview (The Crucial Addition):**
+    * Implement a simplified, instant preview that plays the raw background video and overlay text *before* the slow final render. *This draft must replicate the final caption styling.*
+5.  **Rendering:** A large 'GENERATE FINAL VIDEO' button and a progress bar.
+
+### 4. Background Functionality (Backend)
+#### A. Local TTS Engine (`tts_engine.py`)
+The script must generate a clean RVC pipeline that takes text and a specific character `.pth` model as input. It must run locally on GPU using `torch` and `cuda` for speed. *Ask the AI to generate code for a streamlined local integration using an existing local RVC library.*
+
+#### B. OpenAI Whisper Integration (`whisper_aligment.py`)
+Once TTS generates the `.wav` file, use `faster_whisper` to transcribe it. The core requirement is to obtain *word-level timestamps* for the entire audio file. This is the output needed for MoviePy.
+
+#### C. Video Renderer (`video_renderer.py`)
+Combine assets using `moviepy`:
+1.  Select a random background video and loop or subclip it to the audio duration.
+2.  Add the character avatar (`.png` with transparency) to the top left.
+3.  Implement the captioning: Using the word timestamps from Whisper, generate a series of `TextClip` objects.
+    * **Style:** 1-3 words max, white font (`Impact` or similar bold font), black stroke, stroke width `2`.
+    * **Animation (The Karaoke Highlight):** During the playback duration of each *active* word, that word must change color to yellow with a black stroke, while previous and future words remain white with black stroke. Composite these clips perfectly.
+
+### 5. AI Coding Guidelines (Instructions for the LLM)
+* "Don't generate placeholder functions. Write complete, functional code for a clean `CustomTkinter` interface and a `MoviePy` rendering pipeline that implements the specific word-by-word karaoke highlight style."
+* "Crucially, design the preview draft to render *instantly* without doing the full composite process, but showing the *dynamic captions*. You might use a simple overlay over a blank background for speed."
+* "Generate a detailed `README.md` with installation steps (including CUDA, Python environment, requirements.txt, and how to acquire or structure the RVC and avatar files)."
+* "Implement robust error handling, especially for CUDA issues and missing files."
+
+
+Σημαντικές Σημειώσεις:
+
+    AI CLI: Αυτό το prompt είναι σχεδιασμένο για ένα πολύ δυνατό AI που μπορεί να γράψει χιλιάδες γραμμές κώδικα (όπως το GPT-4, το Claude 3 Opus ή ένα specialized coding model). Ένα απλό CLI LLM μπορεί να πελαγώσει. Ίσως χρειαστεί να του δίνεις ένα section τη φορά (π.χ. "γράψε το GUI", μετά "γράψε το TTS engine").
+
+    RVC (Voice Cloning): Το "δωρεάν" και "τοπικό" για φωνές Family Guy απαιτεί RVC (Retrieval-based Voice Conversion). Η AI θα πρέπει να σου φτιάξει ένα script που ενσωματώνει μια βιβλιοθήκη RVC. Θα πρέπει να βρεις και να κατεβάσεις μόνος σου τα .pth αρχεία των χαρακτήρων (υπάρχουν πολλά δωρεάν online).
+
+    CUDA: Για να τρέξει όλο αυτό τοπικά σε λογικό χρόνο (Whisper + RVC + MoviePy), χρειάζεσαι οπωσδήποτε κάρτα γραφικών NVIDIA και εγκατεστημένο το CUDA. Η AI πρέπει να το λάβει υπόψη.
+αν ο υπολογιστης δεν εχει καρταγραφικων να γινει η επεξεργιασια του βιντεο μεσω του cpu. παρε παραδειγμα απο την εφαρμογη "C:\Users\George\Desktop\python projects\slideshow_rita_aggelia\slideshow_app.py" για το πως χρησημοποιει τον cpu και ολους τους πηινες ακομα και του xeon 2690v4
