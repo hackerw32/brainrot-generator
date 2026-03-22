@@ -1,0 +1,16 @@
+{
+  "bg_folder": "C:/Users/George/Desktop/python projects/brainrot generator/background videos",
+  "bg_video": "Minecraft Parkour Gameplay NO COPYRIGHT (Vertical)-(1920p60).mp4",
+  "avatars_folder": "C:/Users/George/Desktop/python projects/brainrot generator/characters avatar",
+  "music_folder": "C:/Users/George/Desktop/python projects/brainrot generator/background music",
+  "music_file": "[No Copyright Music] Chill Lofi Hip Hop Beat FREE Instrumental (Copyright Free) Chillhop Music.mp3",
+  "music_volume": 0.15,
+  "font_color": "#FFFFFF",
+  "stroke_color": "#000000",
+  "highlight_color": "#FFFF00",
+  "max_words": 3,
+  "resolution": "720x1280 (HD Shorts)",
+  "tts_engine": "auto",
+  "xtts_wav": "(no file \u2014 uses default)",
+  "output_folder": "C:/Users/George/Desktop/python projects/brainrot generator"
+}

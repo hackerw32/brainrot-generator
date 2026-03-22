@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "exportedAt": "2026-03-20T16:45:00.000Z",
+  "script": [
+    {
+      "text": "Πίτερ, αλήθεια τώρα; Ακόμα προσπαθείς να καταλάβεις πώς δουλεύει το τηλεκοντρόλ;",
+      "character": "Stewie Griffin",
+      "characterAvatar": "/images/audio_selection_images/stewie_audio_gen_icon.png"
+    },
+    {
+      "text": "Στιούι, άσε με, έχει αγώνα και δεν βρίσκω το κανάλι που δείχνει μόνο σουβλάκια!",
+      "character": "Peter Griffin",
+      "characterAvatar": "/images/audio_selection_images/peter_audio_gen_icon.png"
+    },
+    {
+      "text": "Δεν υπάρχει κανάλι με σουβλάκια, ανόητε χοντρέ! Είναι η τρίτη φορά που το λες σήμερα.",
+      "character": "Stewie Griffin",
+      "characterAvatar": "/images/audio_selection_images/stewie_audio_gen_icon.png"
+    },
+    {
+      "text": "Ε τότε γιατί η τηλεόραση μυρίζει τζατζίκι; Ε; Εξήγησέ το αυτό αν είσαι τόσο έξυπνος!",
+      "character": "Peter Griffin",
+      "characterAvatar": "/images/audio_selection_images/peter_audio_gen_icon.png"
+    },
+    {
+      "text": "Γιατί έπεσες πάνω στην οθόνη ενώ έτρωγες! Θεέ μου, πώς επιβιώνεις ακόμα;",
+      "character": "Stewie Griffin",
+      "characterAvatar": "/images/audio_selection_images/stewie_audio_gen_icon.png"
+    },
+    {
+      "text": "Με την αγάπη της Λόις και το έξτρα πίτα-γύρο, Στιούι. Με αυτά!",
+      "character": "Peter Griffin",
+      "characterAvatar": "/images/audio_selection_images/peter_audio_gen_icon.png"
+    }
+  ]
+}

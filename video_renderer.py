@@ -211,9 +211,8 @@ def _build_caption_video(captions: list[dict],
 def _overlay_avatar(base_video: Path, avatar_png: Optional[str | Path],
                     out: Path, canvas_w: int, canvas_h: int,
                     log: Optional[Callable] = None) -> bool:
-    """Overlay avatar PNG (top-left) on base video using FFmpeg."""
+    """Overlay avatar PNG centered horizontally, above the captions area."""
     if not avatar_png or not Path(avatar_png).exists():
-        # No avatar — just copy
         cmd = [
             "ffmpeg", "-y",
             "-threads", str(CPU_THREADS),
@@ -223,7 +222,11 @@ def _overlay_avatar(base_video: Path, avatar_png: Optional[str | Path],
         ]
         return _run(cmd, log)
 
-    avatar_size = canvas_w // 4   # avatar takes ~25% of width
+    # Avatar is 35% of canvas width, centered, starting at 25% from top
+    # Captions sit at 60% height — this leaves a clear gap below the avatar
+    avatar_size = int(canvas_w * 0.35)
+    y_pos       = int(canvas_h * 0.25)
+
     cmd = [
         "ffmpeg", "-y",
         "-threads", str(CPU_THREADS),
@@ -232,7 +235,7 @@ def _overlay_avatar(base_video: Path, avatar_png: Optional[str | Path],
         "-filter_complex",
         (
             f"[1:v]scale={avatar_size}:{avatar_size}[avatar];"
-            f"[0:v][avatar]overlay=20:20"
+            f"[0:v][avatar]overlay=(W-w)/2:{y_pos}"
         ),
         "-c:v", "libx264",
         "-preset", "fast",
@@ -312,21 +315,43 @@ def _mux_audio_video(video: Path, audio: Path, out: Path,
     return _run(cmd, log)
 
 
+def _mix_music(speech_audio: Path, music_path: Path, out: Path,
+               volume: float = 0.15, log: Optional[Callable] = None) -> bool:
+    """Mix background music (looped) into speech audio at reduced volume."""
+    cmd = [
+        "ffmpeg", "-y",
+        "-threads", str(CPU_THREADS),
+        "-i", str(speech_audio),
+        "-stream_loop", "-1",
+        "-i", str(music_path),
+        "-filter_complex",
+        f"[1:a]volume={volume}[music];[0:a][music]amix=inputs=2:duration=first:dropout_transition=2[aout]",
+        "-map", "[aout]",
+        "-ar", "44100",
+        "-ac", "2",
+        str(out),
+    ]
+    return _run(cmd, log)
+
+
 # ── Main render pipeline ──────────────────────────────────────────────────────
 
 def render_video(
-    script_lines: list[dict],
-    bg_folder:    str | Path,
-    output_path:  str | Path,
-    width:        int = 1080,
-    height:       int = 1920,
-    max_words:    int = 3,
-    font_color:   str = DEFAULT_FONT_COLOR,
-    stroke_color: str = DEFAULT_STROKE_COLOR,
+    script_lines:  list[dict],
+    bg_folder:     str | Path,
+    output_path:   str | Path,
+    bg_video_path: Optional[str | Path] = None,
+    music_path:    Optional[str | Path] = None,
+    music_volume:  float = 0.15,
+    width:         int = 1080,
+    height:        int = 1920,
+    max_words:     int = 3,
+    font_color:    str = DEFAULT_FONT_COLOR,
+    stroke_color:  str = DEFAULT_STROKE_COLOR,
     highlight_color: str = DEFAULT_HIGHLIGHT_COLOR,
-    stroke_width: int = STROKE_WIDTH,
-    log:          Optional[Callable] = None,
-    progress_cb:  Optional[Callable] = None,
+    stroke_width:  int = STROKE_WIDTH,
+    log:           Optional[Callable] = None,
+    progress_cb:   Optional[Callable] = None,
 ) -> bool:
     """
     Full render pipeline. script_lines must already have:
@@ -362,7 +387,10 @@ def render_video(
     _step(f"Total duration: {total_duration:.1f}s")
 
     # ── 2. Pick & loop background video ───────────────────────────────────────
-    bg_src = _get_bg_video(bg_folder)
+    if bg_video_path and Path(bg_video_path).exists():
+        bg_src = Path(bg_video_path)
+    else:
+        bg_src = _get_bg_video(bg_folder)
     if not bg_src:
         if log:
             log(f"[Render] ERROR: No video files in {bg_folder}")
@@ -438,8 +466,20 @@ def render_video(
     if not _concat_audios(audio_paths, merged_audio, log):
         return False
 
+    # Mix background music if provided
+    final_audio = merged_audio
+    if music_path and Path(music_path).exists():
+        mixed = tmp / "mixed_audio.m4a"
+        if _mix_music(merged_audio, Path(music_path), mixed, music_volume, log):
+            final_audio = mixed
+            if log:
+                log(f"[Render] Background music mixed at {int(music_volume*100)}%")
+        else:
+            if log:
+                log("[Render] Music mixing failed — using speech only")
+
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    success = _mux_audio_video(with_captions, merged_audio, output_path, log)
+    success = _mux_audio_video(with_captions, final_audio, output_path, log)
 
     if success and log:
         log(f"[Render] DONE → {output_path}")

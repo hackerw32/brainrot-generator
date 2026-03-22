@@ -79,6 +79,25 @@ CHARACTER_VOICES = {
     },
 }
 
+# ── Greek voice overrides (auto-used when Greek text is detected) ──────────────
+GREEK_VOICES = {
+    "male": {
+        "voice":  "el-GR-NestorasNeural",
+        "rate":   "0%",
+        "pitch":  "0Hz",
+        "ffmpeg_filter": None,
+    },
+    "female": {
+        "voice":  "el-GR-AthinaNeural",
+        "rate":   "0%",
+        "pitch":  "0Hz",
+        "ffmpeg_filter": None,
+    },
+}
+
+# Characters treated as female for voice selection
+FEMALE_CHARACTERS = {"lois", "meg", "aria", "elena", "maria", "athina", "anna"}
+
 # ── Whisper model ──────────────────────────────────────────────────────────────
 WHISPER_MODEL  = "base"      # tiny | base | small | medium | large-v3
 WHISPER_DEVICE = "auto"      # "cpu" | "cuda" | "auto"
@@ -86,10 +105,12 @@ WHISPER_DEVICE = "auto"      # "cpu" | "cuda" | "auto"
 # ── FFmpeg ─────────────────────────────────────────────────────────────────────
 CPU_THREADS = os.cpu_count() or 4
 
-# Font for captions (looks for Impact, falls back to Arial Bold, then default)
+# Font for captions — Arial Bold first so Greek characters render correctly.
+# Impact looks great for English but lacks Greek Unicode glyphs.
 CAPTION_FONT_CANDIDATES = [
-    "C:/Windows/Fonts/impact.ttf",
-    "C:/Windows/Fonts/arialbd.ttf",
+    "C:/Windows/Fonts/arialbd.ttf",   # Arial Bold — supports Greek & Latin
+    "C:/Windows/Fonts/arialuni.ttf",  # Arial Unicode MS — widest coverage
+    "C:/Windows/Fonts/impact.ttf",    # Impact — classic brainrot (English only)
     "C:/Windows/Fonts/arial.ttf",
 ]
 
